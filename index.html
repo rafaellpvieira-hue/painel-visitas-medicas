@@ -1,0 +1,2512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#07558c">
+
+<title>Painel de Visitas Médicas</title>
+
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f2f5f8;
+  color: #172b4d;
+}
+
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.header {
+
+  background: linear-gradient(
+    135deg,
+    #063f70,
+    #0873ad
+  );
+
+  color: white;
+
+  padding: 18px 16px;
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 100;
+
+  box-shadow:
+    0 3px 12px rgba(0,0,0,.20);
+
+}
+
+.header-title {
+
+  font-size: 21px;
+
+  font-weight: bold;
+
+}
+
+.header-subtitle {
+
+  font-size: 12px;
+
+  margin-top: 5px;
+
+  opacity: .9;
+
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+
+  width: 100%;
+
+  max-width: 1100px;
+
+  margin: auto;
+
+  padding: 12px;
+
+}
+
+
+/* =========================
+   RESUMO
+========================= */
+
+.resumo {
+
+  background: white;
+
+  border-radius: 15px;
+
+  padding: 15px;
+
+  margin-bottom: 12px;
+
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.08);
+
+}
+
+.resumo-titulo {
+
+  font-size: 17px;
+
+  font-weight: bold;
+
+  margin-bottom: 12px;
+
+}
+
+.estatisticas {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap: 8px;
+
+}
+
+.estatistica {
+
+  background: #f5f7fa;
+
+  border-radius: 11px;
+
+  padding: 10px 4px;
+
+  text-align: center;
+
+}
+
+.numero {
+
+  font-size: 22px;
+
+  font-weight: bold;
+
+}
+
+.verde {
+
+  color: #079455;
+
+}
+
+.vermelho {
+
+  color: #e53935;
+
+}
+
+.azul {
+
+  color: #0873ad;
+
+}
+
+.descricao {
+
+  font-size: 11px;
+
+  color: #68778d;
+
+  margin-top: 3px;
+
+}
+
+
+/* =========================
+   BUSCA
+========================= */
+
+.busca {
+
+  background: white;
+
+  border-radius: 15px;
+
+  padding: 14px;
+
+  margin-bottom: 12px;
+
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.08);
+
+}
+
+.busca-titulo {
+
+  font-size: 17px;
+
+  font-weight: bold;
+
+  margin-bottom: 10px;
+
+}
+
+.search {
+
+  width: 100%;
+
+  height: 52px;
+
+  border: 1px solid #ccd6e0;
+
+  border-radius: 12px;
+
+  padding: 0 15px;
+
+  font-size: 16px;
+
+  outline: none;
+
+}
+
+.search:focus {
+
+  border-color: #0873ad;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(8,115,173,.12);
+
+}
+
+
+/* =========================
+   RESULTADOS
+========================= */
+
+.resultado {
+
+  padding: 14px 5px;
+
+  border-bottom:
+    1px solid #e8edf2;
+
+  cursor: pointer;
+
+}
+
+.resultado:active {
+
+  background: #edf6ff;
+
+}
+
+.resultado-nome {
+
+  font-weight: bold;
+
+  font-size: 15px;
+
+}
+
+.resultado-info {
+
+  color: #68778d;
+
+  font-size: 12px;
+
+  margin-top: 4px;
+
+}
+
+
+/* =========================
+   PRIORITÁRIOS
+========================= */
+
+.prioritarios {
+
+  background: white;
+
+  border-radius: 15px;
+
+  padding: 14px;
+
+  margin-bottom: 15px;
+
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.08);
+
+}
+
+.prioritario-item {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 12px 3px;
+
+  border-bottom:
+    1px solid #edf0f4;
+
+  cursor: pointer;
+
+}
+
+.prioritario-item:last-child {
+
+  border-bottom: none;
+
+}
+
+.prioritario-nome {
+
+  font-size: 14px;
+
+  font-weight: bold;
+
+}
+
+.prioritario-info {
+
+  font-size: 12px;
+
+  color: #68778d;
+
+  margin-top: 3px;
+
+}
+
+.status {
+
+  font-size: 11px;
+
+  font-weight: bold;
+
+  white-space: nowrap;
+
+}
+
+
+/* =========================
+   MÉDICOS DO DIA
+========================= */
+
+.dia-header {
+
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  align-items: center;
+
+  margin: 18px 2px 10px;
+
+}
+
+.dia-titulo {
+
+  font-size: 19px;
+
+  font-weight: bold;
+
+}
+
+.contador {
+
+  background: #e7f2fb;
+
+  color: #07558c;
+
+  padding: 7px 11px;
+
+  border-radius: 20px;
+
+  font-size: 13px;
+
+  font-weight: bold;
+
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+
+  background: white;
+
+  border-radius: 15px;
+
+  padding: 15px;
+
+  margin-bottom: 12px;
+
+  border:
+    1px solid #e0e7ee;
+
+  box-shadow:
+    0 2px 9px rgba(0,0,0,.08);
+
+}
+
+.card-topo {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 10px;
+
+}
+
+.numero-medico {
+
+  width: 38px;
+
+  height: 38px;
+
+  min-width: 38px;
+
+  border-radius: 10px;
+
+  background: #e5f1fc;
+
+  color: #07558c;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 17px;
+
+  font-weight: bold;
+
+}
+
+.nome-medico {
+
+  font-size: 17px;
+
+  font-weight: bold;
+
+  line-height: 1.25;
+
+}
+
+.info-medico {
+
+  color: #68778d;
+
+  font-size: 13px;
+
+  margin-top: 4px;
+
+}
+
+.estrela {
+
+  color: #f2a900;
+
+  font-size: 20px;
+
+}
+
+.btn-remover {
+
+  margin-left: auto;
+
+  border: none;
+
+  background: transparent;
+
+  color: #7b8794;
+
+  font-size: 25px;
+
+  padding: 0;
+
+}
+
+
+/* =========================
+   OBSERVAÇÃO
+========================= */
+
+.observacao {
+
+  width: 100%;
+
+  min-height: 120px;
+
+  margin-top: 13px;
+
+  border:
+    1px solid #d2dbe5;
+
+  border-radius: 12px;
+
+  padding: 12px;
+
+  font-size: 15px;
+
+  line-height: 1.45;
+
+  resize: vertical;
+
+  outline: none;
+
+}
+
+.observacao:focus {
+
+  border-color: #0873ad;
+
+}
+
+
+/* =========================
+   BOTÕES
+========================= */
+
+.botoes {
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 9px;
+
+  margin-top: 11px;
+
+}
+
+.btn {
+
+  min-height: 50px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  font-size: 14px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+}
+
+.btn-microfone {
+
+  background: #079455;
+
+  color: white;
+
+}
+
+.btn-microfone.gravando {
+
+  background: #e53935;
+
+  animation: pulsar 1s infinite;
+
+}
+
+.btn-salvar {
+
+  background: #0873d1;
+
+  color: white;
+
+}
+
+.btn-copiar {
+
+  background: #edf1f5;
+
+  color: #173b60;
+
+}
+
+.btn-historico {
+
+  background: #f1effc;
+
+  color: #57429b;
+
+}
+
+
+@keyframes pulsar {
+
+  50% {
+
+    transform: scale(.96);
+
+  }
+
+}
+
+
+/* =========================
+   STATUS GRAVAÇÃO
+========================= */
+
+.gravando-status {
+
+  min-height: 18px;
+
+  text-align: center;
+
+  color: #e53935;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  margin-top: 7px;
+
+}
+
+
+/* =========================
+   HISTÓRICO
+========================= */
+
+.historico {
+
+  display: none;
+
+  background: #f7f9fc;
+
+  border-radius: 11px;
+
+  padding: 12px;
+
+  margin-top: 10px;
+
+}
+
+.historico-item {
+
+  padding: 10px 0;
+
+  border-bottom:
+    1px solid #dde4eb;
+
+  font-size: 13px;
+
+  line-height: 1.4;
+
+}
+
+.historico-item:last-child {
+
+  border-bottom: none;
+
+}
+
+.historico-data {
+
+  color: #0873ad;
+
+  font-weight: bold;
+
+  margin-bottom: 4px;
+
+}
+
+
+/* =========================
+   VAZIO
+========================= */
+
+.vazio {
+
+  background: white;
+
+  border:
+    2px dashed #ccd6e0;
+
+  border-radius: 14px;
+
+  padding: 35px 15px;
+
+  text-align: center;
+
+  color: #718096;
+
+}
+
+
+/* =========================
+   BOTÃO NOVA BUSCA
+========================= */
+
+.btn-nova-busca {
+
+  width: 100%;
+
+  height: 48px;
+
+  margin-top: 10px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: #edf2f6;
+
+  color: #17456c;
+
+  font-weight: bold;
+
+}
+
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 800px) {
+
+  .container {
+
+    padding: 20px;
+
+  }
+
+  .grid {
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(2,1fr);
+
+    gap: 12px;
+
+  }
+
+}
+
+
+/* =========================
+   CELULAR PEQUENO
+========================= */
+
+@media (max-width: 380px) {
+
+  .header-title {
+
+    font-size: 19px;
+
+  }
+
+  .nome-medico {
+
+    font-size: 16px;
+
+  }
+
+  .btn {
+
+    font-size: 13px;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     CABEÇALHO
+========================= -->
+
+<div class="header">
+
+  <div class="header-title">
+
+    🩺 Painel de Visitas Médicas
+
+  </div>
+
+  <div class="header-subtitle">
+
+    Organize suas visitas e registre suas observações
+
+  </div>
+
+</div>
+
+
+<div class="container">
+
+
+<!-- =========================
+     RESUMO
+========================= -->
+
+<div class="resumo">
+
+  <div class="resumo-titulo">
+
+    ⭐ Prioritários do mês
+
+  </div>
+
+
+  <div class="estatisticas">
+
+
+    <div class="estatistica">
+
+      <div
+        id="totalPrioritarios"
+        class="numero azul">
+
+        0
+
+      </div>
+
+      <div class="descricao">
+
+        Prioritários
+
+      </div>
+
+    </div>
+
+
+    <div class="estatistica">
+
+      <div
+        id="visitados"
+        class="numero verde">
+
+        0
+
+      </div>
+
+      <div class="descricao">
+
+        Visitados
+
+      </div>
+
+    </div>
+
+
+    <div class="estatistica">
+
+      <div
+        id="pendentes"
+        class="numero vermelho">
+
+        0
+
+      </div>
+
+      <div class="descricao">
+
+        Pendentes
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     BUSCA
+========================= -->
+
+<div class="busca">
+
+  <div class="busca-titulo">
+
+    🔎 Buscar médico
+
+  </div>
+
+
+  <input
+
+    id="busca"
+
+    class="search"
+
+    type="search"
+
+    autocomplete="off"
+
+    placeholder="Digite o nome do médico..."
+
+    oninput="buscarMedicos()"
+
+  >
+
+
+  <div id="resultados"></div>
+
+
+  <button
+
+    class="btn-nova-busca"
+
+    onclick="limparBusca()"
+
+  >
+
+    🔄 Limpar busca
+
+  </button>
+
+</div>
+
+
+<!-- =========================
+     PRIORITÁRIOS
+========================= -->
+
+<div class="prioritarios">
+
+  <div class="busca-titulo">
+
+    ⭐ Médicos prioritários
+
+  </div>
+
+
+  <div id="listaPrioritarios">
+
+    Carregando...
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MÉDICOS DO DIA
+========================= -->
+
+<div class="dia-header">
+
+  <div class="dia-titulo">
+
+    👨‍⚕️ Médicos de hoje
+
+  </div>
+
+
+  <div
+    id="contador"
+    class="contador">
+
+    0 / 15
+
+  </div>
+
+</div>
+
+
+<div
+  id="medicosDoDia"
+  class="grid">
+
+
+  <div class="vazio">
+
+    <div style="font-size:40px">
+
+      👨‍⚕️
+
+    </div>
+
+    <br>
+
+    Pesquise um médico acima
+    para adicionar à visita de hoje.
+
+  </div>
+
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+/*******************************************************
+ * URL DO SEU GOOGLE APPS SCRIPT
+ *******************************************************/
+
+const URL_APPS_SCRIPT =
+  'https://script.google.com/macros/s/AKfycbxMQIqFAIAfvT42o4vpv_ei3NPGqf_W0eJYvfzEIt5LRimSfE460UfTzjx-oPlMZo8eWA/exec';
+
+
+/*******************************************************
+ * VARIÁVEIS
+ *******************************************************/
+
+let medicosSelecionados = [];
+
+let reconhecimento = {};
+
+let gravando = {};
+
+let buscaTimer = null;
+
+
+/*******************************************************
+ * FUNÇÃO PARA CHAMAR O APPS SCRIPT
+ *******************************************************/
+
+function chamarServidor(
+  acao,
+  parametros = {}
+) {
+
+  return new Promise(
+    function(resolve, reject) {
+
+      const callback =
+        'callback_' +
+        Date.now() +
+        '_' +
+        Math.floor(
+          Math.random() * 100000
+        );
+
+
+      window[callback] =
+        function(resultado) {
+
+          delete window[callback];
+
+          script.remove();
+
+          resolve(resultado);
+
+        };
+
+
+      const params =
+        new URLSearchParams();
+
+
+      params.set(
+        'acao',
+        acao
+      );
+
+
+      params.set(
+        'callback',
+        callback
+      );
+
+
+      Object.keys(
+        parametros
+      ).forEach(
+        function(chave) {
+
+          params.set(
+            chave,
+            parametros[chave]
+          );
+
+        }
+      );
+
+
+      const script =
+        document.createElement(
+          'script'
+        );
+
+
+      script.src =
+        URL_APPS_SCRIPT +
+        '?' +
+        params.toString();
+
+
+      script.onerror =
+        function() {
+
+          delete window[callback];
+
+          script.remove();
+
+          reject(
+            new Error(
+              'Não foi possível acessar o servidor.'
+            )
+          );
+
+        };
+
+
+      document.body.appendChild(
+        script
+      );
+
+    }
+  );
+
+}
+
+
+/*******************************************************
+ * BUSCAR MÉDICOS
+ *******************************************************/
+
+function buscarMedicos() {
+
+  clearTimeout(
+    buscaTimer
+  );
+
+
+  const termo =
+    document
+      .getElementById('busca')
+      .value
+      .trim();
+
+
+  if (!termo) {
+
+    document
+      .getElementById('resultados')
+      .innerHTML = '';
+
+    return;
+
+  }
+
+
+  buscaTimer =
+    setTimeout(
+      async function() {
+
+        try {
+
+          const lista =
+            await chamarServidor(
+              'buscar',
+              {
+                termo: termo
+              }
+            );
+
+
+          mostrarResultados(
+            lista
+          );
+
+
+        } catch(erro) {
+
+          console.error(erro);
+
+        }
+
+      },
+      250
+    );
+
+}
+
+
+/*******************************************************
+ * MOSTRAR RESULTADOS
+ *******************************************************/
+
+function mostrarResultados(
+  lista
+) {
+
+  const div =
+    document
+      .getElementById(
+        'resultados'
+      );
+
+
+  div.innerHTML = '';
+
+
+  if (
+    !lista ||
+    lista.length === 0
+  ) {
+
+    div.innerHTML = `
+
+      <div
+        style="
+        padding:15px 5px;
+        color:#777;
+        ">
+
+        Nenhum médico encontrado.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  lista.forEach(
+    function(medico) {
+
+      const item =
+        document.createElement(
+          'div'
+        );
+
+
+      item.className =
+        'resultado';
+
+
+      item.innerHTML = `
+
+        <div class="resultado-nome">
+
+          ${
+            medico.prioritario
+            ? '⭐ '
+            : ''
+          }
+
+          ${escapar(
+            medico.nome
+          )}
+
+        </div>
+
+
+        <div class="resultado-info">
+
+          ${escapar(
+            medico.especialidade || ''
+          )}
+
+          ${
+            medico.cidade
+            ? ' | ' +
+              escapar(
+                medico.cidade
+              )
+            : ''
+          }
+
+        </div>
+
+      `;
+
+
+      item.onclick =
+        function() {
+
+          adicionarMedico(
+            medico
+          );
+
+        };
+
+
+      div.appendChild(
+        item
+      );
+
+    }
+  );
+
+}
+
+
+/*******************************************************
+ * ADICIONAR MÉDICO
+ *******************************************************/
+
+function adicionarMedico(
+  medico
+) {
+
+  if (
+    medicosSelecionados.length >= 15
+  ) {
+
+    alert(
+      'Você já adicionou os 15 médicos do dia.'
+    );
+
+    return;
+
+  }
+
+
+  const existe =
+    medicosSelecionados.some(
+      function(m) {
+
+        return (
+          m.nome === medico.nome
+        );
+
+      }
+    );
+
+
+  if (existe) {
+
+    alert(
+      'Este médico já está no painel.'
+    );
+
+    return;
+
+  }
+
+
+  medicosSelecionados.push({
+
+    nome:
+      medico.nome,
+
+    especialidade:
+      medico.especialidade || '',
+
+    cidade:
+      medico.cidade || '',
+
+    prioritario:
+      medico.prioritario || false,
+
+    observacao:
+      ''
+
+  });
+
+
+  limparBusca();
+
+
+  renderizar();
+
+}
+
+
+/*******************************************************
+ * RENDERIZAR MÉDICOS
+ *******************************************************/
+
+function renderizar() {
+
+  const painel =
+    document
+      .getElementById(
+        'medicosDoDia'
+      );
+
+
+  painel.innerHTML = '';
+
+
+  if (
+    medicosSelecionados.length === 0
+  ) {
+
+    painel.innerHTML = `
+
+      <div class="vazio">
+
+        <div style="font-size:40px">
+
+          👨‍⚕️
+
+        </div>
+
+        <br>
+
+        Pesquise um médico acima
+        para adicionar à visita de hoje.
+
+      </div>
+
+    `;
+
+  }
+
+
+  medicosSelecionados.forEach(
+    function(medico,index) {
+
+
+      const card =
+        document.createElement(
+          'div'
+        );
+
+
+      card.className =
+        'card';
+
+
+      card.innerHTML = `
+
+        <div class="card-topo">
+
+
+          <div class="numero-medico">
+
+            ${index + 1}
+
+          </div>
+
+
+          <div style="flex:1">
+
+
+            <div class="nome-medico">
+
+              ${
+                medico.prioritario
+                ? '<span class="estrela">⭐</span> '
+                : ''
+              }
+
+              ${escapar(
+                medico.nome
+              )}
+
+            </div>
+
+
+            <div class="info-medico">
+
+              ${escapar(
+                medico.especialidade
+              )}
+
+              ${
+                medico.cidade
+                ? ' | ' +
+                  escapar(
+                    medico.cidade
+                  )
+                : ''
+              }
+
+            </div>
+
+
+          </div>
+
+
+          <button
+
+            class="btn-remover"
+
+            onclick="
+              removerMedico(${index})
+            "
+
+          >
+
+            ×
+
+          </button>
+
+
+        </div>
+
+
+        <textarea
+
+          id="obs${index}"
+
+          class="observacao"
+
+          placeholder="Digite a observação ou use o microfone..."
+
+          oninput="
+            atualizarTexto(${index})
+          "
+
+        >${escapar(
+          medico.observacao
+        )}</textarea>
+
+
+        <div
+
+          id="status${index}"
+
+          class="gravando-status"
+
+        ></div>
+
+
+        <div class="botoes">
+
+
+          <button
+
+            id="mic${index}"
+
+            class="btn btn-microfone"
+
+            onclick="
+              alternarMicrofone(${index})
+            "
+
+          >
+
+            🎤 Gravar
+
+          </button>
+
+
+          <button
+
+            class="btn btn-salvar"
+
+            onclick="
+              salvarVisita(${index})
+            "
+
+          >
+
+            💾 Salvar
+
+          </button>
+
+
+          <button
+
+            class="btn btn-copiar"
+
+            onclick="
+              copiarTexto(${index})
+            "
+
+          >
+
+            📋 Copiar
+
+          </button>
+
+
+          <button
+
+            class="btn btn-historico"
+
+            onclick="
+              mostrarHistorico(${index})
+            "
+
+          >
+
+            📊 Histórico
+
+          </button>
+
+
+        </div>
+
+
+        <div
+
+          id="historico${index}"
+
+          class="historico"
+
+        ></div>
+
+      `;
+
+
+      painel.appendChild(
+        card
+      );
+
+    }
+  );
+
+
+  document
+    .getElementById(
+      'contador'
+    )
+    .innerText =
+      medicosSelecionados.length +
+      ' / 15';
+
+}
+
+
+/*******************************************************
+ * ATUALIZAR TEXTO
+ *******************************************************/
+
+function atualizarTexto(index) {
+
+  const textarea =
+    document.getElementById(
+      'obs' + index
+    );
+
+
+  medicosSelecionados[index]
+    .observacao =
+      textarea.value;
+
+}
+
+
+/*******************************************************
+ * MICROFONE INDIVIDUAL
+ *******************************************************/
+
+function alternarMicrofone(
+  index
+) {
+
+  if (
+    gravando[index]
+  ) {
+
+    pararMicrofone(
+      index
+    );
+
+    return;
+
+  }
+
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+  if (!SpeechRecognition) {
+
+    alert(
+      'O reconhecimento de voz não está disponível neste navegador. Use o Google Chrome no Android.'
+    );
+
+    return;
+
+  }
+
+
+  const recognition =
+    new SpeechRecognition();
+
+
+  recognition.lang =
+    'pt-BR';
+
+
+  recognition.continuous =
+    true;
+
+
+  recognition.interimResults =
+    true;
+
+
+  reconhecimento[index] =
+    recognition;
+
+
+  gravando[index] =
+    true;
+
+
+  const botao =
+    document.getElementById(
+      'mic' + index
+    );
+
+
+  botao.classList.add(
+    'gravando'
+  );
+
+
+  botao.innerHTML =
+    '⏹ Parar';
+
+
+  document
+    .getElementById(
+      'status' + index
+    )
+    .innerText =
+      '🔴 GRAVANDO...';
+
+
+  let textoAntes =
+    document
+      .getElementById(
+        'obs' + index
+      )
+      .value;
+
+
+  let textoFinal =
+    textoAntes;
+
+
+  recognition.onresult =
+    function(event) {
+
+      let novoTexto = '';
+
+
+      for (
+        let i =
+          event.resultIndex;
+
+        i <
+          event.results.length;
+
+        i++
+      ) {
+
+        novoTexto +=
+          event.results[i][0]
+            .transcript;
+
+      }
+
+
+      if (
+        novoTexto.trim()
+      ) {
+
+        const textarea =
+          document.getElementById(
+            'obs' + index
+          );
+
+
+        if (
+          textoFinal &&
+          !textoFinal.endsWith(' ')
+        ) {
+
+          textoFinal += ' ';
+
+        }
+
+
+        textoFinal +=
+          novoTexto.trim();
+
+
+        textarea.value =
+          textoFinal;
+
+
+        medicosSelecionados[index]
+          .observacao =
+          textarea.value;
+
+      }
+
+    };
+
+
+  recognition.onerror =
+    function(event) {
+
+      console.error(
+        event.error
+      );
+
+
+      if (
+        event.error ===
+        'not-allowed'
+      ) {
+
+        alert(
+          'O acesso ao microfone foi bloqueado. Verifique a permissão do microfone no navegador.'
+        );
+
+      }
+
+
+      pararMicrofone(
+        index
+      );
+
+    };
+
+
+  recognition.onend =
+    function() {
+
+      if (
+        gravando[index]
+      ) {
+
+        try {
+
+          recognition.start();
+
+        } catch(e) {}
+
+      }
+
+    };
+
+
+  try {
+
+    recognition.start();
+
+  } catch(erro) {
+
+    console.error(
+      erro
+    );
+
+    pararMicrofone(
+      index
+    );
+
+  }
+
+}
+
+
+/*******************************************************
+ * PARAR MICROFONE
+ *******************************************************/
+
+function pararMicrofone(
+  index
+) {
+
+  gravando[index] =
+    false;
+
+
+  if (
+    reconhecimento[index]
+  ) {
+
+    try {
+
+      reconhecimento[index]
+        .stop();
+
+    } catch(e) {}
+
+  }
+
+
+  const botao =
+    document.getElementById(
+      'mic' + index
+    );
+
+
+  if (botao) {
+
+    botao.classList.remove(
+      'gravando'
+    );
+
+    botao.innerHTML =
+      '🎤 Gravar';
+
+  }
+
+
+  const status =
+    document.getElementById(
+      'status' + index
+    );
+
+
+  if (status) {
+
+    status.innerText =
+      '✓ Gravação finalizada';
+
+  }
+
+}
+
+
+/*******************************************************
+ * SALVAR VISITA
+ *******************************************************/
+
+async function salvarVisita(
+  index
+) {
+
+  pararMicrofone(
+    index
+  );
+
+
+  const textarea =
+    document.getElementById(
+      'obs' + index
+    );
+
+
+  const medico =
+    medicosSelecionados[index];
+
+
+  medico.observacao =
+    textarea.value.trim();
+
+
+  if (
+    !medico.observacao
+  ) {
+
+    alert(
+      'Digite ou grave uma observação antes de salvar.'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    const resultado =
+      await chamarServidor(
+        'salvar',
+        {
+
+          nome:
+            medico.nome,
+
+          especialidade:
+            medico.especialidade,
+
+          cidade:
+            medico.cidade,
+
+          observacao:
+            medico.observacao
+
+        }
+      );
+
+
+    if (
+      resultado &&
+      resultado.sucesso
+    ) {
+
+      alert(
+        '✓ Visita salva para ' +
+        medico.nome
+      );
+
+
+      carregarPrioritarios();
+
+    } else {
+
+      alert(
+        'Não foi possível salvar a visita.'
+      );
+
+    }
+
+
+  } catch(erro) {
+
+    console.error(
+      erro
+    );
+
+
+    alert(
+      'Erro ao salvar a visita.'
+    );
+
+  }
+
+}
+
+
+/*******************************************************
+ * COPIAR
+ *******************************************************/
+
+async function copiarTexto(
+  index
+) {
+
+  const texto =
+    document
+      .getElementById(
+        'obs' + index
+      )
+      .value;
+
+
+  if (
+    !texto.trim()
+  ) {
+
+    alert(
+      'Não existe texto para copiar.'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    await navigator.clipboard
+      .writeText(
+        texto
+      );
+
+
+    alert(
+      '✓ Texto copiado!'
+    );
+
+
+  } catch(erro) {
+
+    /*
+     * Fallback para alguns celulares.
+     */
+
+    const textarea =
+      document.getElementById(
+        'obs' + index
+      );
+
+
+    textarea.focus();
+
+    textarea.select();
+
+    document.execCommand(
+      'copy'
+    );
+
+
+    alert(
+      '✓ Texto copiado!'
+    );
+
+  }
+
+}
+
+
+/*******************************************************
+ * REMOVER MÉDICO
+ *******************************************************/
+
+function removerMedico(
+  index
+) {
+
+  pararMicrofone(
+    index
+  );
+
+
+  if (
+    !confirm(
+      'Remover este médico do painel?'
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  medicosSelecionados
+    .splice(
+      index,
+      1
+    );
+
+
+  renderizar();
+
+}
+
+
+/*******************************************************
+ * HISTÓRICO
+ *******************************************************/
+
+async function mostrarHistorico(
+  index
+) {
+
+  const medico =
+    medicosSelecionados[index];
+
+
+  const div =
+    document.getElementById(
+      'historico' + index
+    );
+
+
+  if (
+    div.style.display ===
+    'block'
+  ) {
+
+    div.style.display =
+      'none';
+
+    return;
+
+  }
+
+
+  div.style.display =
+    'block';
+
+
+  div.innerHTML =
+    'Carregando histórico...';
+
+
+  try {
+
+    const lista =
+      await chamarServidor(
+        'historico',
+        {
+
+          nome:
+            medico.nome
+
+        }
+      );
+
+
+    if (
+      !lista ||
+      lista.length === 0
+    ) {
+
+      div.innerHTML =
+        '<b>Nenhuma visita registrada para este médico.</b>';
+
+      return;
+
+    }
+
+
+    div.innerHTML =
+      '<b>📊 Histórico de visitas</b>';
+
+
+    lista.forEach(
+      function(item) {
+
+        div.innerHTML += `
+
+          <div class="historico-item">
+
+            <div class="historico-data">
+
+              ${escapar(
+                item.data
+              )}
+
+              às
+
+              ${escapar(
+                item.hora
+              )}
+
+            </div>
+
+
+            <div>
+
+              ${escapar(
+                item.observacao
+              )}
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    );
+
+
+  } catch(erro) {
+
+    console.error(
+      erro
+    );
+
+
+    div.innerHTML =
+      'Não foi possível carregar o histórico.';
+
+  }
+
+}
+
+
+/*******************************************************
+ * CARREGAR PRIORITÁRIOS
+ *******************************************************/
+
+async function carregarPrioritarios() {
+
+  try {
+
+    const lista =
+      await chamarServidor(
+        'prioritarios'
+      );
+
+
+    const div =
+      document.getElementById(
+        'listaPrioritarios'
+      );
+
+
+    div.innerHTML = '';
+
+
+    let visitados = 0;
+
+
+    if (
+      !lista ||
+      lista.length === 0
+    ) {
+
+      div.innerHTML =
+        'Nenhum médico prioritário cadastrado.';
+
+    }
+
+
+    lista.forEach(
+      function(medico) {
+
+
+        if (
+          medico.visitado
+        ) {
+
+          visitados++;
+
+        }
+
+
+        const item =
+          document.createElement(
+            'div'
+          );
+
+
+        item.className =
+          'prioritario-item';
+
+
+        item.innerHTML = `
+
+          <div>
+
+            <div class="prioritario-nome">
+
+              ⭐
+              ${escapar(
+                medico.nome
+              )}
+
+            </div>
+
+
+            <div class="prioritario-info">
+
+              ${escapar(
+                medico.especialidade || ''
+              )}
+
+              ${
+                medico.cidade
+                ? ' | ' +
+                  escapar(
+                    medico.cidade
+                  )
+                : ''
+              }
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="status
+            ${
+              medico.visitado
+              ? 'verde'
+              : 'vermelho'
+            }">
+
+            ${
+              medico.visitado
+              ? '🟢 Visitado'
+              : '🔴 Pendente'
+            }
+
+          </div>
+
+        `;
+
+
+        item.onclick =
+          function() {
+
+            adicionarMedico(
+              medico
+            );
+
+          };
+
+
+        div.appendChild(
+          item
+        );
+
+      }
+    );
+
+
+    document
+      .getElementById(
+        'totalPrioritarios'
+      )
+      .innerText =
+      lista.length;
+
+
+    document
+      .getElementById(
+        'visitados'
+      )
+      .innerText =
+      visitados;
+
+
+    document
+      .getElementById(
+        'pendentes'
+      )
+      .innerText =
+      lista.length -
+      visitados;
+
+
+  } catch(erro) {
+
+    console.error(
+      erro
+    );
+
+
+    document
+      .getElementById(
+        'listaPrioritarios'
+      )
+      .innerHTML =
+      'Erro ao carregar prioritários.';
+
+  }
+
+}
+
+
+/*******************************************************
+ * LIMPAR BUSCA
+ *******************************************************/
+
+function limparBusca() {
+
+  document
+    .getElementById(
+      'busca'
+    )
+    .value = '';
+
+
+  document
+    .getElementById(
+      'resultados'
+    )
+    .innerHTML = '';
+
+
+}
+
+
+/*******************************************************
+ * PROTEÇÃO CONTRA HTML
+ *******************************************************/
+
+function escapar(texto) {
+
+  return String(
+    texto || ''
+  )
+  .replace(
+    /&/g,
+    '&amp;'
+  )
+  .replace(
+    /</g,
+    '&lt;'
+  )
+  .replace(
+    />/g,
+    '&gt;'
+  )
+  .replace(
+    /"/g,
+    '&quot;'
+  )
+  .replace(
+    /'/g,
+    '&#039;'
+  );
+
+}
+
+
+/*******************************************************
+ * INICIALIZAÇÃO
+ *******************************************************/
+
+carregarPrioritarios();
+
+</script>
+
+
+</body>
+
+</html>
