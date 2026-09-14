@@ -1034,158 +1034,112 @@ const URL_APPS_SCRIPT =
 let medicosSelecionados = [];
 
 let reconhecimento = {};
+
 let gravando = {};
+
 let buscaTimer = null;
-
-
-/*******************************************************
- * MEMÓRIA DOS MÉDICOS DO DIA
- *******************************************************/
-
-function obterChaveMedicosDoDia() {
-
-  const hoje = new Date();
-
-  const ano = hoje.getFullYear();
-  const mes = String(
-    hoje.getMonth() + 1
-  ).padStart(2, '0');
-
-  const dia = String(
-    hoje.getDate()
-  ).padStart(2, '0');
-
-  return 'medicos_do_dia_' +
-    ano + '-' + mes + '-' + dia;
-}
-
-
-/*******************************************************
- * SALVAR MÉDICOS DO DIA NO NAVEGADOR
- *******************************************************/
-
-function salvarMedicosDoDia() {
-
-  try {
-
-    localStorage.setItem(
-      obterChaveMedicosDoDia(),
-      JSON.stringify(
-        medicosSelecionados
-      )
-    );
-
-  } catch (erro) {
-
-    console.error(
-      'Erro ao salvar médicos do dia:',
-      erro
-    );
-
-  }
-}
-
-
-/*******************************************************
- * CARREGAR MÉDICOS DO DIA
- *******************************************************/
-
-function carregarMedicosDoDia() {
-
-  try {
-
-    const dados =
-      localStorage.getItem(
-        obterChaveMedicosDoDia()
-      );
-
-    if (!dados) {
-      return;
-    }
-
-    const lista =
-      JSON.parse(dados);
-
-    if (
-      Array.isArray(lista)
-    ) {
-
-      medicosSelecionados =
-        lista.slice(0, 15);
-
-      renderizar();
-
-    }
-
-  } catch (erro) {
-
-    console.error(
-      'Erro ao carregar médicos do dia:',
-      erro
-    );
-
-    medicosSelecionados = [];
-
-  }
-
-}
 
 
 /*******************************************************
  * FUNÇÃO PARA CHAMAR O APPS SCRIPT
  *******************************************************/
-function chamarServidor(acao, parametros = {}) {
-  return new Promise(function(resolve, reject) {
 
-    const callback =
-      'callback_' +
-      Date.now() +
-      '_' +
-      Math.floor(Math.random() * 100000);
+function chamarServidor(
+  acao,
+  parametros = {}
+) {
 
-    window[callback] = function(resultado) {
-      delete window[callback];
+  return new Promise(
+    function(resolve, reject) {
 
-      if (script && script.parentNode) {
-        script.remove();
-      }
+      const callback =
+        'callback_' +
+        Date.now() +
+        '_' +
+        Math.floor(
+          Math.random() * 100000
+        );
 
-      resolve(resultado);
-    };
 
-    const params = new URLSearchParams();
+      window[callback] =
+        function(resultado) {
 
-    params.set('acao', acao);
-    params.set('callback', callback);
+          delete window[callback];
 
-    Object.keys(parametros).forEach(function(chave) {
-      params.set(chave, parametros[chave]);
-    });
+          script.remove();
 
-    const script = document.createElement('script');
+          resolve(resultado);
 
-    script.src =
-      URL_APPS_SCRIPT +
-      '?' +
-      params.toString();
+        };
 
-    script.onerror = function() {
-      delete window[callback];
 
-      if (script && script.parentNode) {
-        script.remove();
-      }
+      const params =
+        new URLSearchParams();
 
-      reject(
-        new Error(
-          'Não foi possível acessar o servidor.'
-        )
+
+      params.set(
+        'acao',
+        acao
       );
-    };
 
-    document.body.appendChild(script);
-  });
+
+      params.set(
+        'callback',
+        callback
+      );
+
+
+      Object.keys(
+        parametros
+      ).forEach(
+        function(chave) {
+
+          params.set(
+            chave,
+            parametros[chave]
+          );
+
+        }
+      );
+
+
+      const script =
+        document.createElement(
+          'script'
+        );
+
+
+      script.src =
+        URL_APPS_SCRIPT +
+        '?' +
+        params.toString();
+
+
+      script.onerror =
+        function() {
+
+          delete window[callback];
+
+          script.remove();
+
+          reject(
+            new Error(
+              'Não foi possível acessar o servidor.'
+            )
+          );
+
+        };
+
+
+      document.body.appendChild(
+        script
+      );
+
+    }
+  );
+
 }
+
 
 /*******************************************************
  * BUSCAR MÉDICOS
@@ -1363,9 +1317,13 @@ function mostrarResultados(
 
 /*******************************************************
  * ADICIONAR MÉDICO
+ *
+ * Agora a seleção é salva no Google Sheets através da
+ * ação "adicionarAgenda". Assim ela não desaparece
+ * quando a página é atualizada.
  *******************************************************/
 
-function adicionarMedico(
+async function adicionarMedico(
   medico
 ) {
 
@@ -1405,31 +1363,75 @@ function adicionarMedico(
   }
 
 
-  medicosSelecionados.push({
+  try {
 
-    nome:
-      medico.nome,
+    const resultado =
+      await chamarServidor(
+        'adicionarAgenda',
+        {
+          nome:
+            medico.nome,
 
-    especialidade:
-      medico.especialidade || '',
+          especialidade:
+            medico.especialidade || '',
 
-    cidade:
-      medico.cidade || '',
-
-    prioritario:
-      medico.prioritario || false,
-
-    observacao:
-      ''
-
-  });
+          cidade:
+            medico.cidade || ''
+        }
+      );
 
 
-   limparBusca();
+    if (
+      !resultado ||
+      !resultado.sucesso
+    ) {
 
-  salvarMedicosDoDia();
+      alert(
+        resultado && resultado.erro
+          ? resultado.erro
+          : 'Não foi possível adicionar o médico.'
+      );
 
-  renderizar();
+      return;
+
+    }
+
+
+    medicosSelecionados.push({
+
+      nome:
+        medico.nome,
+
+      especialidade:
+        medico.especialidade || '',
+
+      cidade:
+        medico.cidade || '',
+
+      prioritario:
+        medico.prioritario || false,
+
+      observacao:
+        ''
+
+    });
+
+
+    limparBusca();
+
+    renderizar();
+
+  } catch(erro) {
+
+    console.error(
+      erro
+    );
+
+    alert(
+      'Erro ao salvar o médico na agenda. Verifique a conexão com o servidor.'
+    );
+
+  }
 
 }
 
@@ -1685,7 +1687,12 @@ function renderizar() {
 
 /*******************************************************
  * ATUALIZAR TEXTO
+ *
+ * Mantém a observação local e também salva no servidor
+ * com pequeno atraso para evitar várias requisições.
  *******************************************************/
+
+const timersObservacao = {};
 
 function atualizarTexto(index) {
 
@@ -1695,9 +1702,66 @@ function atualizarTexto(index) {
     );
 
 
+  if (
+    !medicosSelecionados[index] ||
+    !textarea
+  ) {
+
+    return;
+
+  }
+
+
   medicosSelecionados[index]
     .observacao =
       textarea.value;
+
+
+  clearTimeout(
+    timersObservacao[index]
+  );
+
+
+  timersObservacao[index] =
+    setTimeout(
+      async function() {
+
+        const medico =
+          medicosSelecionados[index];
+
+
+        if (!medico) {
+
+          return;
+
+        }
+
+
+        try {
+
+          await chamarServidor(
+            'atualizarAgenda',
+            {
+              nome:
+                medico.nome,
+
+              observacao:
+                medico.observacao
+            }
+          );
+
+        } catch(erro) {
+
+          console.error(
+            'Erro ao salvar observação da agenda:',
+            erro
+          );
+
+        }
+
+      },
+      500
+    );
 
 }
 
@@ -2159,7 +2223,7 @@ async function copiarTexto(
  * REMOVER MÉDICO
  *******************************************************/
 
-function removerMedico(
+async function removerMedico(
   index
 ) {
 
@@ -2179,15 +2243,64 @@ function removerMedico(
   }
 
 
- medicosSelecionados
-    .splice(
+  const medico =
+    medicosSelecionados[index];
+
+
+  if (!medico) {
+
+    return;
+
+  }
+
+
+  try {
+
+    const resultado =
+      await chamarServidor(
+        'removerAgenda',
+        {
+          nome:
+            medico.nome
+        }
+      );
+
+
+    if (
+      !resultado ||
+      !resultado.sucesso
+    ) {
+
+      alert(
+        resultado && resultado.erro
+          ? resultado.erro
+          : 'Não foi possível remover o médico.'
+      );
+
+      return;
+
+    }
+
+
+    medicosSelecionados.splice(
       index,
       1
     );
 
-  salvarMedicosDoDia();
 
-  renderizar();
+    renderizar();
+
+  } catch(erro) {
+
+    console.error(
+      erro
+    );
+
+    alert(
+      'Erro ao remover o médico da agenda.'
+    );
+
+  }
 
 }
 
@@ -2309,6 +2422,58 @@ async function mostrarHistorico(
 
     div.innerHTML =
       'Não foi possível carregar o histórico.';
+
+  }
+
+}
+
+
+/*******************************************************
+ * CARREGAR AGENDA DE HOJE
+ *
+ * Busca no Google Sheets os médicos que já foram
+ * selecionados para o dia atual.
+ *******************************************************/
+
+async function carregarAgendaHoje() {
+
+  try {
+
+    const lista =
+      await chamarServidor(
+        'agendaHoje'
+      );
+
+
+    if (
+      Array.isArray(lista)
+    ) {
+
+      medicosSelecionados =
+        lista.slice(0, 15);
+
+    } else {
+
+      medicosSelecionados = [];
+
+    }
+
+
+    renderizar();
+
+  } catch(erro) {
+
+    console.error(
+      'Erro ao carregar agenda de hoje:',
+      erro
+    );
+
+    /*
+     * Não apagamos uma agenda que já esteja em memória
+     * caso o servidor esteja temporariamente indisponível.
+     */
+
+    renderizar();
 
   }
 
@@ -2550,8 +2715,12 @@ function escapar(texto) {
  * INICIALIZAÇÃO
  *******************************************************/
 
-carregarMedicosDoDia();
+/*
+ * Primeiro carrega os médicos de hoje do Google Sheets.
+ * Depois carrega a lista de prioritários.
+ */
 
+carregarAgendaHoje();
 carregarPrioritarios();
 
 </script>
