@@ -1034,10 +1034,101 @@ const URL_APPS_SCRIPT =
 let medicosSelecionados = [];
 
 let reconhecimento = {};
-
 let gravando = {};
-
 let buscaTimer = null;
+
+
+/*******************************************************
+ * MEMÓRIA DOS MÉDICOS DO DIA
+ *******************************************************/
+
+function obterChaveMedicosDoDia() {
+
+  const hoje = new Date();
+
+  const ano = hoje.getFullYear();
+  const mes = String(
+    hoje.getMonth() + 1
+  ).padStart(2, '0');
+
+  const dia = String(
+    hoje.getDate()
+  ).padStart(2, '0');
+
+  return 'medicos_do_dia_' +
+    ano + '-' + mes + '-' + dia;
+}
+
+
+/*******************************************************
+ * SALVAR MÉDICOS DO DIA NO NAVEGADOR
+ *******************************************************/
+
+function salvarMedicosDoDia() {
+
+  try {
+
+    localStorage.setItem(
+      obterChaveMedicosDoDia(),
+      JSON.stringify(
+        medicosSelecionados
+      )
+    );
+
+  } catch (erro) {
+
+    console.error(
+      'Erro ao salvar médicos do dia:',
+      erro
+    );
+
+  }
+}
+
+
+/*******************************************************
+ * CARREGAR MÉDICOS DO DIA
+ *******************************************************/
+
+function carregarMedicosDoDia() {
+
+  try {
+
+    const dados =
+      localStorage.getItem(
+        obterChaveMedicosDoDia()
+      );
+
+    if (!dados) {
+      return;
+    }
+
+    const lista =
+      JSON.parse(dados);
+
+    if (
+      Array.isArray(lista)
+    ) {
+
+      medicosSelecionados =
+        lista.slice(0, 15);
+
+      renderizar();
+
+    }
+
+  } catch (erro) {
+
+    console.error(
+      'Erro ao carregar médicos do dia:',
+      erro
+    );
+
+    medicosSelecionados = [];
+
+  }
+
+}
 
 
 /*******************************************************
@@ -1334,8 +1425,9 @@ function adicionarMedico(
   });
 
 
-  limparBusca();
+   limparBusca();
 
+  salvarMedicosDoDia();
 
   renderizar();
 
@@ -2087,12 +2179,13 @@ function removerMedico(
   }
 
 
-  medicosSelecionados
+ medicosSelecionados
     .splice(
       index,
       1
     );
 
+  salvarMedicosDoDia();
 
   renderizar();
 
