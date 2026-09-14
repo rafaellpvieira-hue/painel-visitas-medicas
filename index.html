@@ -1043,103 +1043,58 @@ let buscaTimer = null;
 /*******************************************************
  * FUNÇÃO PARA CHAMAR O APPS SCRIPT
  *******************************************************/
+function chamarServidor(acao, parametros = {}) {
+  return new Promise(function(resolve, reject) {
 
-function chamarServidor(
-  acao,
-  parametros = {}
-) {
+    const callback =
+      'callback_' +
+      Date.now() +
+      '_' +
+      Math.floor(Math.random() * 100000);
 
-  return new Promise(
-    function(resolve, reject) {
+    window[callback] = function(resultado) {
+      delete window[callback];
 
-      const callback =
-        'callback_' +
-        Date.now() +
-        '_' +
-        Math.floor(
-          Math.random() * 100000
-        );
+      if (script && script.parentNode) {
+        script.remove();
+      }
 
+      resolve(resultado);
+    };
 
-      window[callback] =
-        function(resultado) {
+    const params = new URLSearchParams();
 
-          delete window[callback];
+    params.set('acao', acao);
+    params.set('callback', callback);
 
-          script.remove();
+    Object.keys(parametros).forEach(function(chave) {
+      params.set(chave, parametros[chave]);
+    });
 
-          resolve(resultado);
+    const script = document.createElement('script');
 
-        };
+    script.src =
+      URL_APPS_SCRIPT +
+      '?' +
+      params.toString();
 
+    script.onerror = function() {
+      delete window[callback];
 
-      const params =
-        new URLSearchParams();
+      if (script && script.parentNode) {
+        script.remove();
+      }
 
-
-      params.set(
-        'acao',
-        acao
+      reject(
+        new Error(
+          'Não foi possível acessar o servidor.'
+        )
       );
+    };
 
-
-      params.set(
-        'callback',
-        callback
-      );
-
-
-      Object.keys(
-        parametros
-      ).forEach(
-        function(chave) {
-
-          params.set(
-            chave,
-            parametros[chave]
-          );
-
-        }
-      );
-
-
-      const script =
-        document.createElement(
-          'script'
-        );
-
-
-      script.src =
-        URL_APPS_SCRIPT +
-        '?' +
-        params.toString();
-
-
-      script.onerror =
-        function() {
-
-          delete window[callback];
-
-          script.remove();
-
-          reject(
-            new Error(
-              'Não foi possível acessar o servidor.'
-            )
-          );
-
-        };
-
-
-      document.body.appendChild(
-        script
-      );
-
-    }
-  );
-
+    document.body.appendChild(script);
+  });
 }
-
 
 /*******************************************************
  * BUSCAR MÉDICOS
